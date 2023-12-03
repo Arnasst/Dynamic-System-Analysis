@@ -3,8 +3,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from matanalize.functions import calculate_iterative_series, calculate_time_series, func, MAX_POINTS
-
+from matanalize.functions import calculate_iterative_series, calculate_time_series, generate_bifurcation_data, func, MAX_POINTS
 
 def plot_orbits(x0:float, a: float, axes: Axes, canvas: FigureCanvasTkAgg):
     values = calculate_time_series(x0, a)
@@ -32,11 +31,21 @@ def plot_iterative_point(x0: float, a: float, axes: Axes, canvas: FigureCanvasTk
 
     canvas.get_tk_widget().pack()
 
+def plot_feigenbaum_tree(x0: float, axes: Axes, canvas: FigureCanvasTkAgg):
+    values = generate_bifurcation_data(x0)
+
+    x = [i[0] for i in values]
+    y = [i[1] for i in values]
+    axes.scatter(x, y, s=0.05, edgecolors='black', c='black')
+    canvas.draw()
+    
+    canvas.get_tk_widget().pack()
+
 
 def main():
     window = tk.Tk()
     window.title("Dinaminės sistemos analizė")
-    window.geometry("800x600")
+    window.geometry("1500x800")
 
     canvas1 = tk.Canvas(window, width=400, height=100)
     canvas1.pack()
@@ -57,12 +66,12 @@ def main():
     )
     error_label.pack(pady=10)
 
-    fig = Figure(figsize = (10, 5),
-                 dpi = 100)
-    plot1 = fig.add_subplot(1, 2, 1)
-    plot2 = fig.add_subplot(1, 2, 2)
-    canvas = FigureCanvasTkAgg(fig,
-                               master = window)
+    fig = Figure(figsize = (40, 10), dpi = 100)
+    plot1 = fig.add_subplot(1, 3, 1)
+    plot2 = fig.add_subplot(1, 3, 2)
+    plot3 = fig.add_subplot(1, 3, 3)
+    
+    canvas = FigureCanvasTkAgg(fig, master = window)
     # placing the canvas on the Tkinter window
     canvas.get_tk_widget().pack()
 
@@ -73,8 +82,10 @@ def main():
 
             plot1.clear()
             plot2.clear()
+            plot3.clear()
             plot_orbits(x0, a, plot1, canvas)
             plot_iterative_point(x0, a, plot2, canvas)
+            plot_feigenbaum_tree(x0, plot3, canvas)
             error_label["text"] = ""
         except:
             error_label["text"] = "Neteisinga įvestis"

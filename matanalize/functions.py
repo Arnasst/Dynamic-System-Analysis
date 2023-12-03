@@ -1,4 +1,5 @@
 from math import exp
+import numpy as np
 
 MAX_POINTS = 200
 
@@ -25,3 +26,22 @@ def calculate_iterative_series(x0: float, a: float) -> list[tuple[float, float]]
         values.append((y, y))
         last_x = y
     return values
+
+def generate_bifurcation_data(x0: float) -> list[tuple[float, float]]:
+    # config
+    a_values = np.linspace(2.4, 4.0, 500)
+    num_transient = 500
+    num_points = 35
+
+    data = []
+
+    for a in a_values:
+        x = x0
+        for _ in range(num_transient):
+            x = func(x, a)
+
+        for _ in range(num_points):
+            x = func(x, a)
+            data.append((a, x))
+
+    return np.array(data)
