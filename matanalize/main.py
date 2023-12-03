@@ -41,6 +41,16 @@ def plot_feigenbaum_tree(x0: float, axes: Axes, canvas: FigureCanvasTkAgg):
     
     canvas.get_tk_widget().pack()
 
+def plot_bifurcation_points(axes: Axes, canvas: FigureCanvasTkAgg):
+    values = [2.52, 2.65, 3.16]
+
+    for value in values:
+        axes.axvline(x=value, color='r', linestyle='--')
+        axes.text(value + 0.01, 3, f'Bifurkacinis taškas r={value}', rotation=90, color='r')
+    
+    canvas.draw()
+    canvas.get_tk_widget().pack()
+
 
 def main():
     window = tk.Tk()
@@ -86,6 +96,7 @@ def main():
             plot_orbits(x0, a, plot1, canvas)
             plot_iterative_point(x0, a, plot2, canvas)
             plot_feigenbaum_tree(x0, plot3, canvas)
+            plot_bifurcation_points(plot3, canvas)
             error_label["text"] = ""
         except:
             error_label["text"] = "Neteisinga įvestis"
